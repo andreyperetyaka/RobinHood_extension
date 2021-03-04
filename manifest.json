@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+
+  "name": "RobinHood",
+  "short_name": "RobinHood",
+  "description": "RobinHood - предупредит о номерах телефонов мошенников и других проходимцев в интернете.",
+  "version": "1.0.0.6",
+
+  "browser_action": {
+    "default_icon": "pic/icon.png",
+    "default_title": "Нажмите сюда, для запуска RobinHood"
+  },
+  "background": {
+    "scripts": ["app.js"],
+    "persistent": true
+  },
+  "permissions": ["activeTab", "*://*/*", "identity"],
+  "optional_permissions": ["history"],
+  "oauth2": {
+    "client_id": "435376004943-edfa95cuientn5ktr5b87jf9vpfmkaig.apps.googleusercontent.com",
+    "scopes": ["email profile openid"]
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtoUI8ZOfffqGZqH5Yyg+o1fEeEA1q5EzrKjDi4BFO9V270ONb8u64GeQ1oKITYQHfD7tF74yBegI2bOBiNy9Kzw9OwfXtyw1YEFupd/LKSQm3q1c9DZR/mf5WhrtuLhsNVJtKOoVhFeKvIbrUeoZ2wOm8i32gJ+HdpLA9aedBzMM1l9MIVjt1Miy2JBYpMbZ+sHUBmxftYoIZrQ5kjp8KwelEHhPReGqBW9wEUCrzsawQlj9nRQYoFTcamlOuTioWLe8e0tze6nsQhmPI2/SDFmYaPQYhpOXE14Y8HIe4+EAFv+4WmR1gsAtcJdctC0qM2QzizPuD0zgxR0Tud8/JwIDAQAB",
+  "content_security_policy": "script-src 'self' https://connect.facebook.net https://ssl.google-analytics.com https://www.googletagmanager.com https://apis.google.com https://www.gstatic.com https://code.jquery.com https://cdnjs.cloudflare.com; object-src 'self'"
+}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Popup</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/css/uikit.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/js/uikit-icons.min.js"></script>
+    <script defer src="../js/popup.js"></script>
+  </head>
+
+  <body>
+    <div class="uk-width-xxlarge">
+      <nav class="uk-navbar-container" uk-navbar>
+        <div class="uk-navbar-left uk-margin-left">
+          <a class="uk-navbar-item uk-logo" href="#">RobinHood</a>
+        </div>
+        <div class="uk-navbar-right uk-margin-right">
+          <div
+            id="status"
+            class="uk-navbar-item uk-navbar-center uk-flex uk-flex-column uk-text-center"
+          ></div>
+          <div class="uk-navbar-item">
+            <button
+              data-type="pay"
+              class="uk-button uk-button-default"
+              title="Продлить тариф"
+            >
+              <span uk-icon="icon:  credit-card; ratio: 1"></span>
+            </button>
+            <button
+              data-type="contact"
+              class="uk-button uk-button-default"
+              title="Написать автору"
+            >
+              <span uk-icon="icon: facebook; ratio: 1"></span>
+            </button>
+          </div>
+        </div>
+      </nav>
+      <div id="phoneList" class="uk-container uk-margin"></div>
+    </div>
+    <div id="referrer" class="uk-flex-top">
+      <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+        <span class="uk-text"
+          >Введите реферальный код человека, который рекомендовал вам RobinHood
+          и вы оба получите
+          <span class="uk-text-primary">дополнительный месяц</span>
+          использования приложения.<br /><br />Если вы не знаете код
+          <a id="search" class="uk-text-primary uk-link-heading"
+            >кликните здесь</a
+          >, чтобы найти его в истории браузера автоматически!</span
+        >
+        <input
+          id="code"
+          class="uk-input uk-margin"
+          placeholder="Введите реферальный код"
+        />
+        <div class="uk-flex uk-flex-around uk-margin uk-text-center">
+          <button
+            class="uk-button uk-button-primary uk-modal-close"
+            type="button"
+          >
+            Закрыть окно
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

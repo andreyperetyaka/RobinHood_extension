@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Выбери пакет</title>
+    <meta
+      property="og:url"
+      content="https://chrome.google.com/webstore/detail/robinhood/ideiplndalkgaodfmjfblcdobajojcpp/?ref=1"
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="RobinHood — единая база рейтинга номеров"
+    />
+    <meta
+      property="og:description"
+      content="RobinHood предупредит об опасных номерах"
+    />
+    <meta property="og:image" content="../../pic/promo.png" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/css/uikit.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/js/uikit-icons.min.js"></script>
+    <script defer src="../js/offer.js"></script>
+  </head>
+
+  <body>
+    <script
+      async
+      defer
+      src="https://connect.facebook.net/en_US/sdk.js"
+    ></script>
+    <div id="main" class="uk-container">
+      <div
+        class="uk-card uk-card-body uk-card-default uk-margin-medium-top uk-margin-medium-bottom"
+      >
+        <article class="uk-article uk-text-small uk-animation-scale-up">
+          <h2 class="uk-text-primary">
+            Привет, рад, что ты хочешь продолжить пользоваться RobinHood.
+          </h2>
+          <p class="uk-text-lead">
+            Наша основная миссия: сделать серфинг интернета безопаснее.
+          </p>
+          <p>
+            Наша база уже содержит более <b>26 000</b> украинских номеров
+            телефонов мошенников, обманщиков и прочих неблагонадежных
+            субъектов.<br />Данные постоянно пополняются и обновляются нашими
+            пользователями, а также из открытых источников интернета.
+          </p>
+          <p>Чем бы ты не занимался в интернете:</p>
+          <ul class="uk-list uk-list-bullet">
+            <li>покупкой на сайтах и досках объявлений;</li>
+            <li>поиском работы;</li>
+            <li>поиском сотрудников;</li>
+            <li>поиском подрядчиков;</li>
+            <li>поиском партнеров;</li>
+            <li>чтением каналов в Телеграм;</li>
+            <li>скролингом ленты Facebook;</li>
+            <li>да вообще чем угодно...</li>
+          </ul>
+          <p>
+            Если в твоем окне браузера появится подозрительный номер телефона -
+            <b>RobinHood</b> предупредит тебя об опасности, и все это дешевле,
+            чем проезд в маршрутке!<br />Столкнулся с несправедливостью и
+            обманом в интернете - смело снижай рейтинг.
+          </p>
+          <p class="uk-text-lead">Очистим интернет от проходимцев!</p>
+        </article>
+        <h2 class="uk-heading-line uk-text-primary uk-animation-scale-up">
+          Выбери наиболее подходящий пакет:
+        </h2>
+        <div
+          id="packs"
+          class="uk-flex uk-flex-around uk-flex-middle uk-margin-medium-top uk-text-center"
+        ></div>
+        <div class="uk-article uk-margin-large-top uk-animation-scale-up">
+          <h3>Так же ты можешь стать участником реферальной программы:</h3>
+          <span class="uk-text-small"
+            >1) Рекомендуй <b>RobinHood</b> друзьям и знакомым, через свою
+            реферальную ссылку -
+            <a><span id="link" class="uk-text-primary copy"></span></a><br />
+            2) Если после установки расширения друг введет твой реферальный код
+            -
+            <a><span id="code" class="uk-text-primary copy"></span></a>, то вы
+            оба получите <b>дополнительный месяц</b> использования
+            <b>RobinHood</b>!<br />
+            3) Кликай по коду или ссылке, и они будут скопированы автоматически
+            :-)<br />
+            4) Если хочешь поделиться <b>своей ссылкой</b> на Facebook -
+            <a
+              ><span id="share" class="uk-text-primary">кликай сюда</span></a
+            ></span
+          >
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
