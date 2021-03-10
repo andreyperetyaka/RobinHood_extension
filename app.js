@@ -1,36 +1,53 @@
 let chache = {
   tabs: {},
-  numbers: {},
+  votes: {},
 };
-const API = {
-  host: 'https://robinhood-extension.herokuapp.com',
-  get check() {
-    return this.host + '/check';
-  },
-  get vote() {
-    return this.host + '/vote';
-  },
-  get referrer() {
-    return this.host + '/referrer';
-  },
-};
-const getToken = () =>
-  new Promise((resolve) => chrome.identity.getAuthToken(resolve));
 
-function init() {
-  chrome.identity.getAuthToken({ interactive: true }, (token) => {
-    if (token) {
-      chrome.tabs.onActivated.addListener(start);
-      chrome.tabs.onUpdated.addListener(start);
-      chrome.tabs.onCreated.addListener(start);
-      chrome.runtime.onMessage.addListener(router);
-      start();
-    }
+function callAPI(endpoint, method, data) {
+  const host = 'https://robinhood-extension.herokuapp.com';
+  const url =
+    method === 'GET' && data ? host + endpoint + data : host + endpoint;
+  return getToken().then((token) => {
+    let options = {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: method === 'GET' ? undefined : JSON.stringify(data),
+    };
+    return fetch(url, options);
   });
 }
 
+const getToken = (interactive = false) =>
+  new Promise((resolve) =>
+    chrome.identity.getAuthToken({ interactive }, resolve)
+  );
+
+async function init() {
+  let response = await callAPI('/login', 'GET');
+  if (response.ok) {
+    let user = await response.json();
+    chache.user = user;
+    chrome.tabs.onActivated.addListener(start);
+    chrome.tabs.onUpdated.addListener(start);
+    chrome.tabs.onCreated.addListener(start);
+    chrome.runtime.onMessage.addListener(router);
+    start();
+  } else {
+    chrome.browserAction.setBadgeBackgroundColor({ color: 'red' });
+    chrome.browserAction.setTitle({ title: 'Нажмите, чтобы авторизоваться' });
+    chrome.browserAction.setBadgeText({ text: 'user' });
+    chrome.browserAction.onClicked.addListener(async () => {
+      let token = await getToken(true);
+      if (token) init();
+    });
+  }
+}
+
 function start() {
-  getCurrentTab().then((tab) => {
+  getActiveTab().then((tab) => {
     if (
       tab?.url?.startsWith('http') &&
       !tab.url.includes('/chrome.google.com/webstore/')
@@ -50,14 +67,14 @@ router.post = (request, sender, sendResponse) => {
   let numbers = request.body;
   chache.tabs[id] = numbers;
   browserActions();
-  updateNumbers(numbers);
+  updateVotes(numbers);
 };
 
 router.get = (request, sender, sendResponse) => {
-  return getCurrentTab().then((tab) => {
+  return getActiveTab().then((tab) => {
     let numbers = chache.tabs[tab.id];
     let popup = numbers?.map((number) =>
-      chache.numbers[number] ? chache.numbers[number] : { number }
+      chache.votes[number] ? chache.votes[number] : { number }
     );
     sendResponse({
       user: chache.user,
@@ -67,20 +84,22 @@ router.get = (request, sender, sendResponse) => {
 };
 
 router.vote = (request, sender, sendResponse) => {
-  return fetchData(API.vote, request.body).then((response) => {
-    if (response) {
-      chache.numbers[response.number] = response;
+  return callAPI('/votes', 'POST', request.body)
+    .then((response) => response.json())
+    .then((vote) => {
+      chache.votes[vote.number] = vote;
       browserActions();
-    }
-    sendResponse(response);
-  });
+      sendResponse(vote);
+    });
 };
 
 router.referrer = (request, sender, sendResponse) => {
-  return fetchData(API.referrer, request.body).then((response) => {
-    chache.user = response.user;
-    sendResponse(response);
-  });
+  return callAPI('/referrer', 'PUT', request.body)
+    .then((response) => response.json())
+    .then((data) => {
+      chache.user = { ...chache.user, ...data.user };
+      sendResponse(data);
+    });
 };
 
 router.offer = (request, sender, sendResponse) => {
@@ -101,7 +120,7 @@ router.contact = (request, sender, sendResponse) => {
   chrome.tabs.create({ url });
 };
 
-function getCurrentTab() {
+function getActiveTab() {
   return new Promise((resolve) => {
     chrome.tabs.query({ active: true }, (tabs) => {
       resolve(tabs[0]);
@@ -110,7 +129,7 @@ function getCurrentTab() {
 }
 
 function browserActions() {
-  getCurrentTab().then((tab) => {
+  getActiveTab().then((tab) => {
     let numbers = chache.tabs[tab?.id];
     if (numbers) {
       let quantity = numbers.length;
@@ -133,50 +152,26 @@ function browserActions() {
 
 function hasDangerous(numbers) {
   for (let number of numbers) {
-    let vote = chache.numbers[number];
+    let vote = chache.votes[number];
     if (vote && vote.bad > vote.good) return true;
   }
   return false;
 }
 
-function updateNumbers(numbers) {
-  let newNumbers = numbers.filter((number) => !chache.numbers[number]);
-  if (!chache.user || newNumbers.length) {
-    fetchData(API.check, newNumbers).then((payload) => {
-      if (payload) {
-        chache.user = payload.user;
-        if (payload.numbers) {
-          newNumbers.forEach((number) => {
-            let vote = payload.numbers.find((el) => el.number === number);
-            chache.numbers[number] = vote ? vote : { number };
-          });
-          browserActions();
-        }
-      }
-    });
+async function updateVotes(numbers) {
+  let newNumbers = numbers.filter((number) => !chache.votes[number]);
+  if (newNumbers.length) {
+    let query = `?numbers=${newNumbers.join(',')}`;
+    let response = await callAPI('/votes', 'GET', query);
+    if (response.ok) {
+      let votes = await response.json();
+      newNumbers.forEach((number) => {
+        let vote = votes.find((el) => el.number === number);
+        chache.votes[number] = vote ? vote : { number };
+      });
+      browserActions();
+    }
   }
 }
 
-function fetchData(url, body) {
-  return getToken()
-    .then((token) => {
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body),
-      };
-      return fetch(url, options);
-    })
-    .then((response) => response.json())
-    .catch((error) => {
-      console.log(error);
-      chrome.browserAction.setBadgeBackgroundColor({ color: 'red' });
-      chrome.browserAction.setTitle({ title: 'Нет доступа к базе данных!' });
-      chrome.browserAction.setBadgeText({ text: '✕' });
-    });
-}
-
-chrome.browserAction.onClicked.addListener(init);
+init();
